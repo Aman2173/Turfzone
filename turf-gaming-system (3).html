@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurfZone — Book Your Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--green:#00e676;--dg:#00b34a;--bg:#0a0f0d;--card:#111a14;--card2:#162019;--border:#1e3024;--text:#e8f5e9;--muted:#7a9e82;--accent:#ff6b35;--red:#ff4444;--yellow:#ffc107;--blue:#2196f3;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(0,230,118,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(255,107,53,.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:62px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,15,13,.97);backdrop-filter:blur(14px);z-index:100;gap:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--green);text-shadow:0 0 20px rgba(0,230,118,.4);cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.logo span{color:var(--accent);}
+nav ul{display:flex;gap:2px;list-style:none;align-items:center;flex:1;justify-content:center;}
+nav ul li a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;padding:6px 10px;border-radius:6px;transition:all .2s;white-space:nowrap;display:block;cursor:pointer;}
+nav ul li a:hover{color:var(--text);background:rgba(255,255,255,.05);}
+nav ul li a.active{color:var(--green);background:rgba(0,230,118,.08);}
+#nav-dashboard{color:var(--accent)!important;}
+#nav-dashboard.active{background:rgba(255,107,53,.12)!important;color:var(--accent)!important;}
+.nav-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.role-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;display:none;white-space:nowrap;}
+.role-badge.user{background:rgba(0,230,118,.12);color:var(--green);border:1px solid rgba(0,230,118,.3);}
+.role-badge.admin{background:rgba(255,107,53,.15);color:var(--accent);border:1px solid rgba(255,107,53,.4);}
+.nav-login{background:transparent;color:var(--text);border:1px solid var(--border);padding:7px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;}
+.nav-login:hover{border-color:var(--green);color:var(--green);}
+.nav-logout{background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3);padding:7px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;display:none;}
+.nav-logout:hover{background:rgba(255,68,68,.2);}
+.nav-book{background:var(--green);color:#000;border:none;padding:8px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;}
+.nav-book:hover{background:var(--dg);}
+
+/* PAGES */
+.page{display:none;padding:36px;max-width:1150px;margin:0 auto;position:relative;z-index:1;}
+.page.active{display:block;animation:fadeIn .35s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* SHARED */
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;margin-bottom:6px;}
+.section-sub{color:var(--muted);font-size:14px;margin-bottom:24px;}
+.btn-primary{background:var(--green);color:#000;border:none;padding:12px 28px;border-radius:8px;font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;}
+.btn-primary:hover{background:var(--dg);transform:translateY(-2px);}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border);padding:12px 28px;border-radius:8px;font-family:'Outfit',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;}
+.btn-outline:hover{border-color:var(--green);color:var(--green);}
+
+/* HOME */
+.hero{text-align:center;padding:56px 20px 36px;}
+.hero-tag{display:inline-block;background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3);padding:5px 16px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:22px;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(50px,8vw,90px);line-height:.95;letter-spacing:2px;margin-bottom:18px;}
+.hero h1 span{color:var(--green);text-shadow:0 0 30px rgba(0,230,118,.5);}
+.hero p{color:var(--muted);font-size:15px;max-width:460px;margin:0 auto 32px;line-height:1.6;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:40px 0;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center;transition:border-color .2s;}
+.stat-card:hover{border-color:rgba(0,230,118,.4);}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--green);letter-spacing:2px;line-height:1;}
+.stat-label{color:var(--muted);font-size:13px;margin-top:4px;}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;transition:border-color .2s;}
+.feature-card:hover{border-color:rgba(0,230,118,.3);}
+.feature-icon{font-size:30px;margin-bottom:10px;}
+.feature-title{font-weight:700;font-size:15px;margin-bottom:6px;}
+.feature-desc{color:var(--muted);font-size:13px;line-height:1.5;}
+
+/* TURF CARDS */
+.turf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;margin-bottom:36px;}
+.turf-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s;cursor:pointer;}
+.turf-card:hover{transform:translateY(-4px);border-color:rgba(0,230,118,.4);box-shadow:0 12px 32px rgba(0,0,0,.4);}
+.turf-img{height:150px;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;}
+.turf-img.football{background:linear-gradient(135deg,#0d3320,#1a5c38);}
+.turf-img.cricket{background:linear-gradient(135deg,#2d1b0e,#5c3a1e);}
+.turf-img.badminton{background:linear-gradient(135deg,#0d1f3c,#1a3a6e);}
+.turf-img.basketball{background:linear-gradient(135deg,#2d1500,#7a3800);}
+.turf-img.tennis{background:linear-gradient(135deg,#1a2d00,#3d6600);}
+.turf-img.volleyball{background:linear-gradient(135deg,#1a001f,#4a0060);}
+.turf-badge{position:absolute;top:10px;right:10px;background:rgba(0,230,118,.15);color:var(--green);border:1px solid rgba(0,230,118,.3);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.turf-badge.full{background:rgba(255,107,53,.15);color:var(--accent);border-color:rgba(255,107,53,.3);}
+.turf-info{padding:16px;}
+.turf-name{font-weight:700;font-size:16px;margin-bottom:5px;}
+.turf-meta{display:flex;gap:14px;color:var(--muted);font-size:12px;margin-bottom:12px;}
+.turf-price{display:flex;align-items:center;justify-content:space-between;}
+.price{font-family:'Bebas Neue',sans-serif;font-size:21px;color:var(--green);letter-spacing:1px;}
+.price span{font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);font-weight:400;}
+.book-btn{background:var(--green);color:#000;border:none;padding:7px 16px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:all .2s;}
+.book-btn:hover{background:var(--dg);}
+.book-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
+
+/* GAMES */
+.games-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.filter-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.filter-btn:hover,.filter-btn.active{background:rgba(0,230,118,.1);border-color:var(--green);color:var(--green);}
+.game-detail-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;transition:border-color .2s;}
+.game-detail-card:hover{border-color:rgba(0,230,118,.3);}
+.game-detail-header{display:flex;align-items:center;gap:18px;padding:20px 24px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.game-icon-big{font-size:42px;width:68px;height:68px;display:flex;align-items:center;justify-content:center;border-radius:12px;flex-shrink:0;}
+.game-icon-big.football{background:linear-gradient(135deg,#0d3320,#1a5c38);}
+.game-icon-big.cricket{background:linear-gradient(135deg,#2d1b0e,#5c3a1e);}
+.game-icon-big.badminton{background:linear-gradient(135deg,#0d1f3c,#1a3a6e);}
+.game-icon-big.basketball{background:linear-gradient(135deg,#2d1500,#7a3800);}
+.game-icon-big.tennis{background:linear-gradient(135deg,#1a2d00,#3d6600);}
+.game-icon-big.volleyball{background:linear-gradient(135deg,#1a001f,#4a0060);}
+.game-header-info{flex:1;}
+.game-header-info h2{font-size:19px;font-weight:700;margin-bottom:4px;}
+.game-header-info p{color:var(--muted);font-size:13px;line-height:1.5;}
+.game-tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap;}
+.game-tag{background:rgba(0,230,118,.08);color:var(--green);border:1px solid rgba(0,230,118,.2);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;}
+.game-detail-body{display:grid;grid-template-columns:repeat(4,1fr);}
+.game-stat{padding:16px 18px;border-right:1px solid var(--border);text-align:center;}
+.game-stat:last-child{border-right:none;}
+.game-stat-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--green);letter-spacing:1px;}
+.game-stat-key{color:var(--muted);font-size:11px;margin-top:2px;}
+
+/* BOOKING */
+.booking-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px;}
+.form-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;margin-bottom:22px;color:var(--green);}
+.form-group{margin-bottom:16px;}
+label{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 13px;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--green);}
+select option{background:var(--card);}
+textarea{resize:vertical;min-height:90px;}
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+.slot{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;color:var(--text);}
+.slot:hover{border-color:var(--green);color:var(--green);}
+.slot.selected{background:rgba(0,230,118,.15);border-color:var(--green);color:var(--green);}
+.slot.booked{background:rgba(255,107,53,.08);border-color:rgba(255,107,53,.3);color:var(--accent);cursor:not-allowed;font-size:11px;}
+.submit-btn{width:100%;background:var(--green);color:#000;border:none;padding:13px;border-radius:8px;font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px;transition:all .2s;}
+.submit-btn:hover{background:var(--dg);}
+.summary-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:26px;height:fit-content;position:sticky;top:78px;}
+.summary-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;margin-bottom:18px;color:var(--muted);}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);font-size:14px;}
+.summary-row:last-of-type{border-bottom:none;}
+.summary-row .key{color:var(--muted);}
+.summary-row .val{font-weight:600;}
+.summary-row .val.green{color:var(--green);}
+.total-row{background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);border-radius:8px;padding:13px;display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+.total-label{font-weight:700;font-size:14px;}
+.total-amount{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--green);letter-spacing:1px;}
+
+/* DASHBOARD */
+.admin-header{display:flex;align-items:center;gap:14px;background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.25);border-radius:12px;padding:16px 22px;margin-bottom:24px;}
+.admin-header-icon{font-size:34px;}
+.admin-header h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--accent);}
+.admin-header p{color:var(--muted);font-size:13px;margin-top:2px;}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color .2s;}
+.dash-card:hover{border-color:rgba(255,107,53,.3);}
+.dash-icon{font-size:26px;margin-bottom:8px;}
+.dash-num{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--accent);letter-spacing:1px;line-height:1;}
+.dash-label{color:var(--muted);font-size:12px;margin-top:3px;}
+
+/* ADMIN TABS */
+.admin-tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:1px solid var(--border);padding-bottom:0;}
+.admin-tab-btn{background:none;border:none;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:600;font-size:13px;padding:10px 18px;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px;}
+.admin-tab-btn:hover{color:var(--text);}
+.admin-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.admin-tab-content{display:none;}
+.admin-tab-content.active{display:block;animation:fadeIn .3s ease;}
+
+/* MANAGE TURFS */
+.manage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+.manage-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.manage-card-header{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);}
+.manage-card-icon{font-size:28px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:10px;flex-shrink:0;}
+.manage-card-header h4{font-weight:700;font-size:15px;}
+.manage-card-header span{color:var(--muted);font-size:12px;}
+.manage-card-body{padding:16px 18px;display:flex;flex-direction:column;gap:10px;}
+.manage-row{display:flex;align-items:center;gap:10px;}
+.manage-row label{width:80px;flex-shrink:0;margin:0;font-size:11px;}
+.manage-row input{flex:1;padding:8px 11px;font-size:13px;}
+.manage-card-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.save-btn{background:var(--accent);color:#000;border:none;padding:8px 18px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:all .2s;}
+.save-btn:hover{background:#e85a28;}
+.toggle-btn{background:var(--card2);color:var(--muted);border:1px solid var(--border);padding:8px 14px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:600;font-size:12px;cursor:pointer;transition:all .2s;}
+.toggle-btn.open{background:rgba(0,230,118,.1);color:var(--green);border-color:rgba(0,230,118,.3);}
+
+/* MANAGE SLOTS */
+.slot-manage-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.slot-manage-card h4{font-weight:700;font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.slot-manage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.slot-manage-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.slot-manage-item span{font-size:13px;font-weight:600;}
+.slot-toggle{background:none;border:none;cursor:pointer;font-size:18px;transition:transform .2s;}
+.slot-toggle:hover{transform:scale(1.2);}
+.add-slot-row{display:flex;gap:8px;margin-top:12px;}
+.add-slot-row input{flex:1;padding:9px 12px;font-size:13px;}
+.add-slot-btn{background:var(--green);color:#000;border:none;padding:9px 16px;border-radius:6px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;}
+
+/* TABLE */
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:22px;overflow-x:auto;}
+.table-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.table-header h3{font-weight:700;font-size:15px;}
+table{width:100%;border-collapse:collapse;min-width:480px;}
+th{padding:11px 18px;text-align:left;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);}
+td{padding:12px 18px;font-size:13px;border-bottom:1px solid rgba(30,48,36,.5);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(0,230,118,.03);}
+.status-badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.status-badge.confirmed{background:rgba(0,230,118,.15);color:var(--green);}
+.status-badge.pending{background:rgba(255,193,7,.15);color:var(--yellow);}
+.status-badge.cancelled{background:rgba(255,107,53,.15);color:var(--accent);}
+.status-badge.paid{background:rgba(33,150,243,.15);color:var(--blue);}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.contact-info{display:flex;flex-direction:column;gap:12px;}
+.contact-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;gap:12px;align-items:flex-start;transition:border-color .2s;}
+.contact-item:hover{border-color:rgba(0,230,118,.3);}
+.contact-item-icon{font-size:24px;flex-shrink:0;}
+.contact-item h4{font-weight:700;margin-bottom:3px;}
+.contact-item p{color:var(--muted);font-size:13px;line-height:1.6;}
+
+/* ACCESS DENIED */
+.access-denied{text-align:center;padding:70px 20px;}
+.access-denied .lock-icon{font-size:70px;margin-bottom:18px;}
+.access-denied h2{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:2px;color:var(--red);margin-bottom:10px;}
+.access-denied p{color:var(--muted);font-size:15px;max-width:380px;margin:0 auto 26px;line-height:1.6;}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.modal-overlay.show{display:flex;animation:fadeIn .3s ease;}
+
+/* success */
+.modal{background:var(--card);border:1px solid rgba(0,230,118,.3);border-radius:16px;padding:38px;text-align:center;max-width:400px;width:90%;}
+.modal-icon{font-size:52px;margin-bottom:14px;}
+.modal h2{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--green);margin-bottom:8px;}
+.modal p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:20px;}
+.modal-id{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--accent);letter-spacing:3px;background:rgba(255,107,53,.1);padding:7px 18px;border-radius:6px;display:inline-block;margin-bottom:18px;}
+
+/* PAYMENT MODAL */
+.payment-modal{background:var(--card);border:1px solid var(--border);border-radius:18px;max-width:480px;width:93%;overflow:hidden;}
+.payment-header{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.payment-header h2{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;color:var(--green);}
+.payment-amount-display{background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);border-radius:10px;padding:16px 20px;margin:20px;display:flex;align-items:center;justify-content:space-between;}
+.payment-amount-label{color:var(--muted);font-size:14px;}
+.payment-amount-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--green);letter-spacing:1px;}
+.pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px 20px;}
+.pay-method{background:var(--bg);border:2px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;}
+.pay-method:hover{border-color:var(--green);}
+.pay-method.selected{border-color:var(--green);background:rgba(0,230,118,.07);}
+.pay-method-icon{font-size:28px;margin-bottom:6px;}
+.pay-method-name{font-size:13px;font-weight:700;}
+.pay-method-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+.pay-body{padding:0 20px 20px;}
+
+/* UPI form */
+.upi-logos{display:flex;gap:10px;margin-bottom:14px;justify-content:center;}
+.upi-logo{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.upi-logo:hover{border-color:var(--green);color:var(--green);}
+/* Card form */
+.card-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+/* Cash */
+.cash-info{background:rgba(255,193,7,.06);border:1px solid rgba(255,193,7,.2);border-radius:10px;padding:16px;text-align:center;}
+.cash-info p{color:var(--yellow);font-size:14px;margin-top:8px;line-height:1.6;}
+.pay-footer{padding:0 20px 22px;}
+.pay-now-btn{width:100%;background:var(--green);color:#000;border:none;padding:14px;border-radius:8px;font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;cursor:pointer;transition:all .2s;}
+.pay-now-btn:hover{background:var(--dg);}
+
+/* LOGIN MODAL */
+.login-modal{background:var(--card);border:1px solid var(--border);border-radius:18px;max-width:440px;width:93%;overflow:hidden;position:relative;}
+.login-tabs{display:flex;border-bottom:1px solid var(--border);}
+.login-tab{flex:1;padding:15px;text-align:center;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;}
+.login-tab.active.user-tab{color:var(--green);border-bottom-color:var(--green);}
+.login-tab.active.admin-tab{color:var(--accent);border-bottom-color:var(--accent);}
+.login-body{padding:28px;}
+.login-modal h2{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;margin-bottom:4px;}
+.login-modal h2.user-title{color:var(--green);}
+.login-modal h2.admin-title{color:var(--accent);}
+.login-modal .sub{color:var(--muted);font-size:13px;margin-bottom:20px;}
+.login-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted);font-size:19px;cursor:pointer;}
+.hint-box{border-radius:8px;padding:10px 13px;font-size:12px;margin-bottom:16px;line-height:1.6;}
+.hint-box.green{background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);color:var(--muted);}
+.hint-box.orange{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.2);color:var(--accent);}
+.login-submit-btn{width:100%;border:none;padding:12px;border-radius:8px;font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px;transition:all .2s;}
+.login-submit-btn.user-btn{background:var(--green);color:#000;}
+.login-submit-btn.user-btn:hover{background:var(--dg);}
+.login-submit-btn.admin-btn{background:var(--accent);color:#000;}
+.login-submit-btn.admin-btn:hover{background:#e85a28;}
+.error-msg{color:var(--red);font-size:13px;margin-top:8px;text-align:center;display:none;}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1px solid var(--green);border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;z-index:999;transform:translateY(80px);opacity:0;transition:all .4s;max-width:340px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.error{border-color:var(--red);}
+
+@media(max-width:860px){
+  nav{padding:0 10px;gap:6px;}
+  nav ul li a{font-size:11px;padding:5px 6px;}
+  .page{padding:18px 12px;}
+  .booking-layout,.contact-grid,.card-row{grid-template-columns:1fr;}
+  .game-detail-body{grid-template-columns:repeat(2,1fr);}
+  .dash-grid{grid-template-columns:repeat(2,1fr);}
+  .stats,.features-grid{grid-template-columns:repeat(2,1fr);}
+  .hero h1{font-size:48px;}
+  .nav-login{display:none;}
+  .pay-methods{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">Turf<span>Zone</span></div>
+  <ul>
+    <li><a href="#" onclick="return showPage('home')"       id="nav-home">🏠 Home</a></li>
+    <li><a href="#" onclick="return showPage('games')"      id="nav-games">🎮 Games</a></li>
+    <li><a href="#" onclick="return showPage('booking')"    id="nav-booking">📅 Book Now</a></li>
+    <li><a href="#" onclick="return guardDashboard()"       id="nav-dashboard">📊 Dashboard</a></li>
+    <li><a href="#" onclick="return showPage('mybookings')" id="nav-mybookings">🎟️ My Bookings</a></li>
+    <li><a href="#" onclick="return showPage('contact')"    id="nav-contact">📞 Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <span class="role-badge" id="roleBadge"></span>
+    <button class="nav-login"  id="loginBtn"  onclick="openLogin()">🔐 Login</button>
+    <button class="nav-logout" id="logoutBtn" onclick="doLogout()">↩ Logout</button>
+    <button class="nav-book"   onclick="showPage('booking')">⚽ Book Slot</button>
+  </div>
+</nav>
+
+<!-- ══ HOME ══ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-tag">🏆 GTU Mini Project — Turf Gaming System</div>
+    <h1>BOOK YOUR<br><span>TURF SLOT</span><br>ONLINE</h1>
+    <p>Skip the calls, skip the queues. Reserve your favourite sports ground in seconds.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showPage('booking')">⚽ Book a Slot Now</button>
+      <button class="btn-outline" onclick="showPage('games')">🎮 Explore Games</button>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">Turf Grounds</div></div>
+    <div class="stat-card"><div class="stat-num" id="homeTotalBookings">340+</div><div class="stat-label">Bookings Done</div></div>
+    <div class="stat-card"><div class="stat-num">98%</div><div class="stat-label">Satisfaction Rate</div></div>
+  </div>
+  <div class="section-title">AVAILABLE TURFS</div>
+  <div class="section-sub">Select a turf to book your slot instantly</div>
+  <div class="turf-grid" id="homeTurfGrid">
+    <!-- rendered by JS -->
+  </div>
+  <div class="section-title">WHY TURFZONE?</div>
+  <div class="section-sub">Everything you need to enjoy sports without the hassle</div>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">Instant Booking</div><div class="feature-desc">Book your slot in under 60 seconds — no calls, no waiting.</div></div>
+    <div class="feature-card"><div class="feature-icon">📍</div><div class="feature-title">Multiple Locations</div><div class="feature-desc">Find turfs near you across Ahmedabad with real-time availability.</div></div>
+    <div class="feature-card"><div class="feature-icon">💳</div><div class="feature-title">Secure Payments</div><div class="feature-desc">Pay via UPI, card, or cash. Digital receipts generated instantly.</div></div>
+    <div class="feature-card"><div class="feature-icon">🔔</div><div class="feature-title">SMS Confirmation</div><div class="feature-desc">Instant booking confirmation and reminders on your phone.</div></div>
+    <div class="feature-card"><div class="feature-icon">❌</div><div class="feature-title">Free Cancellation</div><div class="feature-desc">Cancel up to 2 hours before your slot — no questions asked.</div></div>
+    <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-title">Booking History</div><div class="feature-desc">Track all past and upcoming bookings from your dashboard.</div></div>
+  </div>
+</div>
+
+<!-- ══ GAMES ══ -->
+<div class="page" id="page-games">
+  <div class="section-title">GAMES & SPORTS</div>
+  <div class="section-sub">Explore all sports available at TurfZone — 6 games, multiple venues</div>
+  <div class="games-filter">
+    <button class="filter-btn active" onclick="filterGames(this,'all')">🏅 All Sports</button>
+    <button class="filter-btn" onclick="filterGames(this,'outdoor')">🌿 Outdoor</button>
+    <button class="filter-btn" onclick="filterGames(this,'indoor')">🏢 Indoor</button>
+    <button class="filter-btn" onclick="filterGames(this,'team')">👥 Team Sports</button>
+    <button class="filter-btn" onclick="filterGames(this,'solo')">🧍 Solo / Pair</button>
+  </div>
+  <div id="gamesContainer"></div>
+</div>
+
+<!-- ══ BOOKING ══ -->
+<div class="page" id="page-booking">
+  <div class="section-title">BOOK A SLOT</div>
+  <div class="section-sub">Fill in your details and choose your preferred time</div>
+  <div class="booking-layout">
+    <div>
+      <div class="form-card">
+        <div class="form-title">YOUR DETAILS</div>
+        <div class="form-group"><label>Full Name</label><input type="text" id="userName" placeholder="Enter your name" oninput="updateSummary()"></div>
+        <div class="form-group"><label>Phone Number</label><input type="tel" id="userPhone" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="form-group"><label>Select Sport / Turf</label>
+          <select id="turfSelect" onchange="onTurfChange()">
+            <option value="">-- Choose Turf --</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Booking Date</label><input type="date" id="bookDate" oninput="updateSummary()"></div>
+        <div class="form-group">
+          <label>Select Time Slot</label>
+          <div class="slot-grid" id="slotGrid"><!-- rendered by JS --></div>
+        </div>
+        <button class="submit-btn" onclick="proceedToPayment()">💳 PROCEED TO PAYMENT</button>
+      </div>
+    </div>
+    <div>
+      <div class="summary-card">
+        <div class="summary-title">BOOKING SUMMARY</div>
+        <div class="summary-row"><span class="key">Player Name</span><span class="val" id="s-name">—</span></div>
+        <div class="summary-row"><span class="key">Turf Selected</span><span class="val" id="s-turf">—</span></div>
+        <div class="summary-row"><span class="key">Location</span><span class="val" id="s-loc">—</span></div>
+        <div class="summary-row"><span class="key">Date</span><span class="val" id="s-date">—</span></div>
+        <div class="summary-row"><span class="key">Time Slot</span><span class="val green" id="s-slot">—</span></div>
+        <div class="total-row"><span class="total-label">Total Amount</span><span class="total-amount" id="s-total">—</span></div>
+        <div style="margin-top:16px;padding:12px;background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.15);border-radius:8px;font-size:13px;color:var(--muted);line-height:1.9;">
+          ✅ Instant confirmation via SMS<br>🔒 Secure & trusted payment<br>❌ Free cancellation up to 2 hrs before
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div class="page" id="page-dashboard">
+  <div id="accessDenied" style="display:none;">
+    <div class="access-denied">
+      <div class="lock-icon">🔒</div>
+      <h2>ACCESS DENIED</h2>
+      <p>The Admin Dashboard is restricted to administrators only. Please login with admin credentials.</p>
+      <button class="btn-primary" onclick="openLogin('admin')" style="margin-right:10px;">🛡️ Admin Login</button>
+      <button class="btn-outline" onclick="showPage('home')">Go Home</button>
+    </div>
+  </div>
+  <div id="adminContent" style="display:none;">
+    <div class="admin-header">
+      <div class="admin-header-icon">🛡️</div>
+      <div><h2>ADMIN DASHBOARD</h2><p>Welcome, <strong id="adminName">Admin</strong> — Full system access enabled</p></div>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card"><div class="dash-icon">📅</div><div class="dash-num" id="statBookings">5</div><div class="dash-label">Total Bookings</div></div>
+      <div class="dash-card"><div class="dash-icon">👥</div><div class="dash-num">312</div><div class="dash-label">Total Users</div></div>
+      <div class="dash-card"><div class="dash-icon">💰</div><div class="dash-num" id="statRevenue">₹0</div><div class="dash-label">Total Revenue</div></div>
+      <div class="dash-card"><div class="dash-icon">🏟️</div><div class="dash-num">6</div><div class="dash-label">Active Turfs</div></div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" onclick="switchAdminTab('bookings')">📋 All Bookings</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('turfs')">🏟️ Manage Turfs & Prices</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('slots')">⏰ Manage Slots</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('dates')">📅 Blocked Dates</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('users')">👥 Users</button>
+    </div>
+
+    <!-- Bookings Tab -->
+    <div class="admin-tab-content active" id="tab-bookings">
+      <div class="table-card">
+        <div class="table-header"><h3>All Bookings</h3><span style="color:var(--muted);font-size:13px;">Live data</span></div>
+        <table>
+          <thead><tr><th>ID</th><th>Player</th><th>Turf</th><th>Date & Slot</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead>
+          <tbody id="adminBookingsTable">
+            <tr><td>#TZ-1042</td><td>Raj Patel</td><td>Football</td><td>29 Apr · 7:00–8:00 AM</td><td>₹800</td><td>UPI</td><td><span class="status-badge paid">Paid</span></td></tr>
+            <tr><td>#TZ-1041</td><td>Ankit Shah</td><td>Cricket</td><td>29 Apr · 5:00–6:00 PM</td><td>₹600</td><td>Card</td><td><span class="status-badge paid">Paid</span></td></tr>
+            <tr><td>#TZ-1040</td><td>Meera Joshi</td><td>Badminton</td><td>29 Apr · 8:00–9:00 AM</td><td>₹400</td><td>Cash</td><td><span class="status-badge pending">Pending</span></td></tr>
+            <tr><td>#TZ-1039</td><td>Vivek Desai</td><td>Football</td><td>28 Apr · 6:00–7:00 PM</td><td>₹800</td><td>UPI</td><td><span class="status-badge cancelled">Cancelled</span></td></tr>
+            <tr><td>#TZ-1038</td><td>Priya Modi</td><td>Cricket</td><td>28 Apr · 4:00–5:00 PM</td><td>₹600</td><td>UPI</td><td><span class="status-badge paid">Paid</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Manage Turfs Tab -->
+    <div class="admin-tab-content" id="tab-turfs">
+      <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">💡 Edit turf name, location, and hourly price. Changes reflect immediately on the booking page.</p>
+      <div class="manage-grid" id="manageTurfGrid"></div>
+    </div>
+
+    <!-- Manage Slots Tab -->
+    <div class="admin-tab-content" id="tab-slots">
+      <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">💡 Toggle slots on/off or add new time slots. Changes reflect immediately on booking page.</p>
+      <div id="manageSlotContainer"></div>
+    </div>
+
+    <!-- Blocked Dates Tab -->
+    <div class="admin-tab-content" id="tab-dates">
+      <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">💡 Block specific dates for maintenance or holidays. Blocked dates will be unavailable for booking.</p>
+      <div class="form-card" style="max-width:480px;">
+        <div class="form-title" style="font-size:18px;">BLOCK A DATE</div>
+        <div class="form-group"><label>Select Turf</label>
+          <select id="blockTurfSelect"></select>
+        </div>
+        <div class="form-group"><label>Select Date to Block</label>
+          <input type="date" id="blockDateInput">
+        </div>
+        <button class="save-btn" style="padding:10px 22px;font-size:13px;" onclick="blockDate()">🚫 Block This Date</button>
+      </div>
+      <div style="margin-top:20px;">
+        <div class="section-title" style="font-size:22px;">BLOCKED DATES</div>
+        <div id="blockedDatesList" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;"></div>
+      </div>
+    </div>
+
+    <!-- Users Tab -->
+    <div class="admin-tab-content" id="tab-users">
+      <div class="table-card">
+        <div class="table-header"><h3>Registered Users</h3><span style="color:var(--muted);font-size:13px;">Total: 312</span></div>
+        <table>
+          <thead><tr><th>User ID</th><th>Name</th><th>Phone</th><th>Bookings</th><th>Total Spent</th></tr></thead>
+          <tbody>
+            <tr><td>#USR-001</td><td>Raj Patel</td><td>+91 98765 43210</td><td>8</td><td>₹6,400</td></tr>
+            <tr><td>#USR-002</td><td>Ankit Shah</td><td>+91 91234 56789</td><td>5</td><td>₹3,000</td></tr>
+            <tr><td>#USR-003</td><td>Meera Joshi</td><td>+91 99887 65432</td><td>3</td><td>₹1,200</td></tr>
+            <tr><td>#USR-004</td><td>Vivek Desai</td><td>+91 70000 12345</td><td>12</td><td>₹9,600</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MY BOOKINGS ══ -->
+<div class="page" id="page-mybookings">
+  <div class="section-title">MY BOOKINGS</div>
+  <div class="section-sub">Your upcoming and past bookings</div>
+  <div class="table-card">
+    <div class="table-header"><h3>All Bookings</h3><span style="color:var(--muted);font-size:13px;" id="loggedUser">Not logged in</span></div>
+    <table>
+      <thead><tr><th>Booking ID</th><th>Turf</th><th>Date & Slot</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead>
+      <tbody id="myBookingsTable">
+        <tr><td>#TZ-1035</td><td>Football — Green Arena</td><td>25 Apr · 7:00–8:00 AM</td><td>₹800</td><td>UPI</td><td><span class="status-badge paid">Paid</span></td></tr>
+        <tr><td>#TZ-1028</td><td>Cricket — Batting Nets</td><td>20 Apr · 5:00–6:00 PM</td><td>₹600</td><td>Card</td><td><span class="status-badge paid">Paid</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ CONTACT ══ -->
+<div class="page" id="page-contact">
+  <div class="section-title">CONTACT US</div>
+  <div class="section-sub">Reach out to TurfZone support or visit us</div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="contact-item"><div class="contact-item-icon">📍</div><div><h4>Head Office</h4><p>TurfZone Sports Pvt. Ltd.<br>Plot 42, Satellite Road, Ahmedabad — 380015</p></div></div>
+      <div class="contact-item"><div class="contact-item-icon">📞</div><div><h4>Phone / WhatsApp</h4><p>+91 98765 43210<br>Mon–Sat, 9 AM – 9 PM</p></div></div>
+      <div class="contact-item"><div class="contact-item-icon">📧</div><div><h4>Email</h4><p>support@turfzone.in<br>bookings@turfzone.in</p></div></div>
+      <div class="contact-item"><div class="contact-item-icon">🌐</div><div><h4>Follow Us</h4><p>Instagram: @turfzone_ahm<br>Facebook: TurfZone Ahmedabad</p></div></div>
+    </div>
+    <div>
+      <div class="form-card">
+        <div class="form-title">SEND A MESSAGE</div>
+        <div class="form-group"><label>Your Name</label><input type="text" placeholder="Enter your name"></div>
+        <div class="form-group"><label>Email</label><input type="email" placeholder="your@email.com"></div>
+        <div class="form-group"><label>Subject</label><select><option>Booking Enquiry</option><option>Payment Issue</option><option>Turf Availability</option><option>Other</option></select></div>
+        <div class="form-group"><label>Message</label><textarea placeholder="Write your message here..."></textarea></div>
+        <button class="submit-btn" onclick="showToast('Message sent! We will reply within 24 hours ✅')">📨 SEND MESSAGE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SUCCESS MODAL ══ -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h2>PAYMENT SUCCESSFUL!</h2>
+    <p>Your turf slot has been booked and payment confirmed. Check your phone for the confirmation SMS.</p>
+    <div class="modal-id" id="bookingId">#TZ-1043</div>
+    <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:12px;margin-bottom:18px;font-size:13px;color:var(--muted);text-align:left;line-height:1.8;">
+      <span id="receiptDetails"></span>
+    </div>
+    <button class="btn-primary" onclick="closeSuccessModal()" style="width:100%">View My Bookings</button>
+  </div>
+</div>
+
+<!-- ══ PAYMENT MODAL ══ -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="payment-modal">
+    <div class="payment-header">
+      <h2>💳 PAYMENT</h2>
+      <button style="background:none;border:none;color:var(--muted);font-size:19px;cursor:pointer;" onclick="closePaymentModal()">✕</button>
+    </div>
+    <div class="payment-amount-display">
+      <span class="payment-amount-label">Amount to Pay</span>
+      <span class="payment-amount-val" id="payAmount">₹800</span>
+    </div>
+    <!-- Method selector -->
+    <div class="pay-methods">
+      <div class="pay-method selected" onclick="selectPayMethod(this,'upi')" id="pm-upi">
+        <div class="pay-method-icon">📱</div>
+        <div class="pay-method-name">UPI</div>
+        <div class="pay-method-desc">GPay / PhonePe / Paytm</div>
+      </div>
+      <div class="pay-method" onclick="selectPayMethod(this,'card')" id="pm-card">
+        <div class="pay-method-icon">💳</div>
+        <div class="pay-method-name">Card</div>
+        <div class="pay-method-desc">Debit / Credit Card</div>
+      </div>
+      <div class="pay-method" onclick="selectPayMethod(this,'netbanking')" id="pm-netbanking">
+        <div class="pay-method-icon">🏦</div>
+        <div class="pay-method-name">Net Banking</div>
+        <div class="pay-method-desc">All major banks</div>
+      </div>
+      <div class="pay-method" onclick="selectPayMethod(this,'cash')" id="pm-cash">
+        <div class="pay-method-icon">💵</div>
+        <div class="pay-method-name">Cash</div>
+        <div class="pay-method-desc">Pay at venue</div>
+      </div>
+    </div>
+    <!-- Dynamic form -->
+    <div class="pay-body">
+      <!-- UPI -->
+      <div id="pay-form-upi">
+        <div class="upi-logos">
+          <div class="upi-logo" onclick="fillUPI('gpay@upi')">GPay</div>
+          <div class="upi-logo" onclick="fillUPI('phonepe@upi')">PhonePe</div>
+          <div class="upi-logo" onclick="fillUPI('paytm@upi')">Paytm</div>
+        </div>
+        <div class="form-group"><label>UPI ID</label><input type="text" id="upiId" placeholder="yourname@upi"></div>
+      </div>
+      <!-- Card -->
+      <div id="pay-form-card" style="display:none;">
+        <div class="form-group"><label>Card Number</label><input type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)"></div>
+        <div class="card-row">
+          <div class="form-group"><label>Expiry (MM/YY)</label><input type="text" id="cardExp" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)"></div>
+          <div class="form-group"><label>CVV</label><input type="password" id="cardCvv" placeholder="•••" maxlength="3"></div>
+        </div>
+        <div class="form-group"><label>Cardholder Name</label><input type="text" id="cardName" placeholder="Name on card"></div>
+      </div>
+      <!-- Net Banking -->
+      <div id="pay-form-netbanking" style="display:none;">
+        <div class="form-group"><label>Select Bank</label>
+          <select id="bankSelect">
+            <option>State Bank of India</option>
+            <option>HDFC Bank</option>
+            <option>ICICI Bank</option>
+            <option>Axis Bank</option>
+            <option>Bank of Baroda</option>
+            <option>Kotak Mahindra Bank</option>
+            <option>Punjab National Bank</option>
+          </select>
+        </div>
+        <div class="form-group"><label>User ID</label><input type="text" id="nbUserId" placeholder="Net banking user ID"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="nbPass" placeholder="Net banking password"></div>
+      </div>
+      <!-- Cash -->
+      <div id="pay-form-cash" style="display:none;">
+        <div class="cash-info">
+          <div style="font-size:40px;">💵</div>
+          <p>Your slot will be reserved. Please pay <strong id="cashAmt" style="color:var(--yellow);">₹800</strong> in cash at the turf reception before your session begins.</p>
+        </div>
+      </div>
+    </div>
+    <div class="pay-footer">
+      <button class="pay-now-btn" onclick="processPayment()" id="payNowBtn">🔒 PAY NOW</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOGIN MODAL ══ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="login-modal">
+    <button class="login-close" onclick="closeLoginModal()">✕</button>
+    <div class="login-tabs">
+      <div class="login-tab active user-tab"  id="tab-user"  onclick="switchLoginTab('user')">👤 User Login</div>
+      <div class="login-tab admin-tab"         id="tab-admin" onclick="switchLoginTab('admin')">🛡️ Admin Login</div>
+    </div>
+    <div class="login-body">
+      <div id="form-user">
+        <h2 class="user-title">USER LOGIN</h2>
+        <p class="sub">Access your bookings and profile</p>
+        <div class="hint-box green">💡 Demo — Phone: <strong>9876543210</strong> &nbsp;|&nbsp; Password: <strong>user123</strong></div>
+        <div class="form-group"><label>Phone / Email</label><input type="text" id="uPhone" placeholder="+91 XXXXX or email"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="uPass" placeholder="Enter password"></div>
+        <div class="error-msg" id="uError">❌ Invalid credentials. Try again.</div>
+        <button class="login-submit-btn user-btn" onclick="doLogin('user')">🔐 LOGIN AS USER</button>
+      </div>
+      <div id="form-admin" style="display:none;">
+        <h2 class="admin-title">ADMIN LOGIN</h2>
+        <p class="sub">Full system access — Admins only</p>
+        <div class="hint-box orange">🛡️ Demo — Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>admin@123</strong></div>
+        <div class="form-group"><label>Admin Username</label><input type="text" id="aUser" placeholder="Enter admin username"></div>
+        <div class="form-group"><label>Admin Password</label><input type="password" id="aPass" placeholder="Enter admin password"></div>
+        <div class="error-msg" id="aError">❌ Invalid admin credentials. Access denied.</div>
+        <button class="login-submit-btn admin-btn" onclick="doLogin('admin')">🛡️ LOGIN AS ADMIN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ <span id="toastMsg"></span></div>
+
+<script>
+/* ════════════════════════════════
+   DATA
+════════════════════════════════ */
+let turfs = [
+  {id:'football', icon:'⚽', name:'Green Arena — Football', location:'Satellite, Ahmedabad', price:800, available:true, class:'football', tags:'outdoor team', players:'5v5 / 7v7', courts:3, rating:4.8},
+  {id:'cricket',  icon:'🏏', name:'Cricket Box — Batting Nets', location:'Bopal, Ahmedabad', price:600, available:true, class:'cricket', tags:'outdoor team', players:'11', courts:4, rating:4.6},
+  {id:'badminton',icon:'🏸', name:'Shuttle Court — Badminton', location:'Navrangpura, Ahmedabad', price:400, available:false, class:'badminton', tags:'indoor solo', players:'2–4', courts:6, rating:4.9},
+  {id:'basketball',icon:'🏀', name:'Hoop Arena — Basketball', location:'Thaltej, Ahmedabad', price:500, available:true, class:'basketball', tags:'outdoor team', players:'5v5', courts:2, rating:4.7},
+  {id:'tennis',   icon:'🎾', name:'Hard Court — Tennis', location:'Bodakdev, Ahmedabad', price:700, available:true, class:'tennis', tags:'outdoor solo', players:'1–4', courts:3, rating:4.5},
+  {id:'volleyball',icon:'🏐', name:'Sand Court — Volleyball', location:'Maninagar, Ahmedabad', price:350, available:true, class:'volleyball', tags:'outdoor team', players:'6v6', courts:2, rating:4.4},
+];
+
+let slots = [
+  {time:'6:00–7:00 AM',  booked:true},
+  {time:'7:00–8:00 AM',  booked:false},
+  {time:'8:00–9:00 AM',  booked:false},
+  {time:'9:00–10:00 AM', booked:false},
+  {time:'10:00–11:00 AM',booked:true},
+  {time:'4:00–5:00 PM',  booked:false},
+  {time:'5:00–6:00 PM',  booked:false},
+  {time:'6:00–7:00 PM',  booked:true},
+  {time:'7:00–8:00 PM',  booked:false},
+];
+
+let blockedDates = {};
+let allBookings  = [];
+let totalRevenue = 3800;
+
+/* state */
+let currentRole = null, currentUser = null;
+let selectedSlot = '', selectedPayMethod = 'upi';
+let pendingBooking = {};
+
+/* ════════════════════════════════
+   RENDER HOME TURF CARDS
+════════════════════════════════ */
+function renderHomeTurfs(){
+  const grid = document.getElementById('homeTurfGrid');
+  grid.innerHTML = turfs.map(t=>`
+    <div class="turf-card" onclick="${t.available?"showPage('booking')":''}">
+      <div class="turf-img ${t.class}">${t.icon}<div class="turf-badge ${t.available?'':'full'}">${t.available?'Available':'Full Today'}</div></div>
+      <div class="turf-info">
+        <div class="turf-name">${t.name}</div>
+        <div class="turf-meta"><span>📍 ${t.location}</span><span>⭐ ${t.rating}</span></div>
+        <div class="turf-price"><div class="price">₹${t.price} <span>/ hour</span></div>
+          <button class="book-btn" ${t.available?'':'disabled'} onclick="event.stopPropagation();showPage('booking')">${t.available?'Book Now':'Fully Booked'}</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ════════════════════════════════
+   RENDER GAMES PAGE
+════════════════════════════════ */
+function renderGames(){
+  document.getElementById('gamesContainer').innerHTML = turfs.map(t=>`
+    <div class="game-detail-card" data-tags="${t.tags}">
+      <div class="game-detail-header">
+        <div class="game-icon-big ${t.class}">${t.icon}</div>
+        <div class="game-header-info">
+          <h2>${t.name}</h2>
+          <p>Book online, show up, play. ${t.players} players · ${t.courts} courts available at ${t.location}.</p>
+          <div class="game-tags">${t.tags.split(' ').map(g=>`<span class="game-tag">${g.charAt(0).toUpperCase()+g.slice(1)}</span>`).join('')}<span class="game-tag">${t.players}</span></div>
+        </div>
+        <button class="book-btn" onclick="showPage('booking')">Book Now</button>
+      </div>
+      <div class="game-detail-body">
+        <div class="game-stat"><div class="game-stat-val">₹${t.price}</div><div class="game-stat-key">Per Hour</div></div>
+        <div class="game-stat"><div class="game-stat-val">${t.courts}</div><div class="game-stat-key">Courts</div></div>
+        <div class="game-stat"><div class="game-stat-val">${t.players}</div><div class="game-stat-key">Players</div></div>
+        <div class="game-stat"><div class="game-stat-val">⭐ ${t.rating}</div><div class="game-stat-key">Rating</div></div>
+      </div>
+    </div>`).join('');
+}
+
+/* ════════════════════════════════
+   RENDER BOOKING SELECTS & SLOTS
+════════════════════════════════ */
+function renderTurfSelect(){
+  const sel = document.getElementById('turfSelect');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">-- Choose Turf --</option>' +
+    turfs.filter(t=>t.available).map(t=>`<option value="${t.id}">${t.icon} ${t.name} (₹${t.price}/hr)</option>`).join('');
+  if(cur) sel.value = cur;
+}
+
+function renderSlots(){
+  const turfId  = document.getElementById('turfSelect').value;
+  const dateVal = document.getElementById('bookDate').value;
+  const grid    = document.getElementById('slotGrid');
+  if(!turfId){grid.innerHTML='<p style="color:var(--muted);font-size:13px;grid-column:1/-1;">Please select a turf first.</p>';return;}
+  const blocked = blockedDates[turfId]||[];
+  const isBlocked = dateVal && blocked.includes(dateVal);
+  if(isBlocked){grid.innerHTML='<p style="color:var(--accent);font-size:13px;grid-column:1/-1;">🚫 This date is blocked by admin.</p>';return;}
+  grid.innerHTML = slots.map((s,i)=>`
+    <div class="slot ${s.booked?'booked':''}" onclick="${s.booked?'':'selectSlot(this,\''+s.time+'\')'}" data-idx="${i}">
+      ${s.time.replace('–','–<br>')}${s.booked?'<br><small>Booked</small>':''}
+    </div>`).join('');
+  // Re-apply selection
+  if(selectedSlot){
+    document.querySelectorAll('.slot').forEach(el=>{
+      if(el.textContent.replace(/\s/g,'').includes(selectedSlot.replace(/\s/g,''))) el.classList.add('selected');
+    });
+  }
+}
+
+function onTurfChange(){selectedSlot='';renderSlots();updateSummary();}
+
+function selectSlot(el,slot){
+  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSlot=slot;
+  updateSummary();
+}
+
+function updateSummary(){
+  const name   = document.getElementById('userName').value||'—';
+  const turfId = document.getElementById('turfSelect').value;
+  const date   = document.getElementById('bookDate').value;
+  const turf   = turfs.find(t=>t.id===turfId);
+  document.getElementById('s-name').textContent = name;
+  document.getElementById('s-turf').textContent = turf?turf.name:'—';
+  document.getElementById('s-loc').textContent  = turf?turf.location:'—';
+  document.getElementById('s-date').textContent = date?new Date(date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
+  document.getElementById('s-slot').textContent = selectedSlot||'—';
+  document.getElementById('s-total').textContent= turf?'₹'+turf.price:'—';
+}
+
+/* ════════════════════════════════
+   PROCEED TO PAYMENT
+════════════════════════════════ */
+function proceedToPayment(){
+  const name   = document.getElementById('userName').value.trim();
+  const phone  = document.getElementById('userPhone').value.trim();
+  const turfId = document.getElementById('turfSelect').value;
+  const date   = document.getElementById('bookDate').value;
+  if(!name||!turfId||!date||!selectedSlot){
+    showToast('❌ Please fill all fields and select a time slot!','error'); return;
+  }
+  const turf = turfs.find(t=>t.id===turfId);
+  pendingBooking = {name,phone,turf,date,slot:selectedSlot,amount:turf.price};
+  document.getElementById('payAmount').textContent = '₹'+turf.price;
+  document.getElementById('cashAmt').textContent   = '₹'+turf.price;
+  selectPayMethod(document.getElementById('pm-upi'),'upi');
+  document.getElementById('paymentModal').classList.add('show');
+}
+
+/* ════════════════════════════════
+   PAYMENT METHODS
+════════════════════════════════ */
+function selectPayMethod(el, method){
+  document.querySelectorAll('.pay-method').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPayMethod = method;
+  ['upi','card','netbanking','cash'].forEach(m=>{
+    document.getElementById('pay-form-'+m).style.display = m===method?'block':'none';
+  });
+  document.getElementById('payNowBtn').textContent =
+    method==='cash'?'✅ RESERVE MY SLOT (Pay at Venue)':'🔒 PAY NOW';
+}
+
+function fillUPI(id){ document.getElementById('upiId').value = id; }
+
+function formatCard(el){
+  let v = el.value.replace(/\D/g,'').slice(0,16);
+  el.value = v.match(/.{1,4}/g)?.join(' ')||v;
+}
+function formatExpiry(el){
+  let v = el.value.replace(/\D/g,'');
+  if(v.length>=3) v = v.slice(0,2)+'/'+v.slice(2,4);
+  el.value = v;
+}
+
+function processPayment(){
+  /* basic validation */
+  if(selectedPayMethod==='upi'){
+    const upi = document.getElementById('upiId').value.trim();
+    if(!upi||!upi.includes('@')){ showToast('❌ Enter a valid UPI ID (e.g. name@upi)','error'); return; }
+  } else if(selectedPayMethod==='card'){
+    const num  = document.getElementById('cardNum').value.replace(/\s/g,'');
+    const exp  = document.getElementById('cardExp').value;
+    const cvv  = document.getElementById('cardCvv').value;
+    const cname= document.getElementById('cardName').value.trim();
+    if(num.length<16||!exp.includes('/')||cvv.length<3||!cname){
+      showToast('❌ Please fill all card details correctly','error'); return;
+    }
+  } else if(selectedPayMethod==='netbanking'){
+    const uid = document.getElementById('nbUserId').value.trim();
+    const pw  = document.getElementById('nbPass').value.trim();
+    if(!uid||!pw){ showToast('❌ Enter net banking credentials','error'); return; }
+  }
+
+  /* simulate processing */
+  const btn = document.getElementById('payNowBtn');
+  btn.textContent = '⏳ Processing...';
+  btn.disabled = true;
+  setTimeout(()=>{
+    btn.textContent = '🔒 PAY NOW';
+    btn.disabled = false;
+    finalizeBooking();
+  }, 1800);
+}
+
+function finalizeBooking(){
+  const id = '#TZ-'+(1043+Math.floor(Math.random()*900));
+  const {name,phone,turf,date,slot,amount} = pendingBooking;
+  const methodLabel = {upi:'UPI',card:'Card',netbanking:'Net Banking',cash:'Cash at Venue'}[selectedPayMethod];
+  const status = selectedPayMethod==='cash'?'Pending':'Paid';
+  const statusClass = selectedPayMethod==='cash'?'pending':'paid';
+
+  // close payment modal
+  document.getElementById('paymentModal').classList.remove('show');
+
+  // show success
+  document.getElementById('bookingId').textContent = id;
+  document.getElementById('receiptDetails').innerHTML =
+    `🏟️ ${turf.name}<br>📅 ${new Date(date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})} · ${slot}<br>💳 Payment: ${methodLabel} — <strong style="color:var(--green)">${status}</strong>`;
+  document.getElementById('successModal').classList.add('show');
+
+  // add to my bookings
+  const mbRow = document.createElement('tr');
+  mbRow.innerHTML = `<td>${id}</td><td>${turf.name}</td><td>${date} · ${slot}</td><td>₹${amount}</td><td>${methodLabel}</td><td><span class="status-badge ${statusClass}">${status}</span></td>`;
+  document.getElementById('myBookingsTable').insertBefore(mbRow, document.getElementById('myBookingsTable').firstChild);
+
+  // add to admin bookings
+  const abRow = document.createElement('tr');
+  abRow.innerHTML = `<td>${id}</td><td>${name}</td><td>${turf.name}</td><td>${date} · ${slot}</td><td>₹${amount}</td><td>${methodLabel}</td><td><span class="status-badge ${statusClass}">${status}</span></td>`;
+  document.getElementById('adminBookingsTable').insertBefore(abRow, document.getElementById('adminBookingsTable').firstChild);
+
+  // update revenue & bookings count
+  if(selectedPayMethod!=='cash') totalRevenue += amount;
+  document.getElementById('statRevenue').textContent  = '₹'+(totalRevenue/1000).toFixed(1)+'K';
+  const bc = document.getElementById('statBookings');
+  bc.textContent = parseInt(bc.textContent)+1;
+
+  // mark slot as booked in UI
+  const idx = slots.findIndex(s=>s.time===slot);
+  if(idx>-1){ slots[idx].booked=true; renderSlots(); }
+  selectedSlot='';
+  updateSummary();
+}
+
+function closeSuccessModal(){
+  document.getElementById('successModal').classList.remove('show');
+  showPage('mybookings');
+}
+function closePaymentModal(){
+  document.getElementById('paymentModal').classList.remove('show');
+}
+
+/* ════════════════════════════════
+   ADMIN — MANAGE TURFS
+════════════════════════════════ */
+function renderManageTurfs(){
+  document.getElementById('manageTurfGrid').innerHTML = turfs.map((t,i)=>`
+    <div class="manage-card">
+      <div class="manage-card-header">
+        <div class="manage-card-icon ${t.class}">${t.icon}</div>
+        <div><h4>${t.name.split('—')[0].trim()}</h4><span>${t.class.charAt(0).toUpperCase()+t.class.slice(1)}</span></div>
+      </div>
+      <div class="manage-card-body">
+        <div class="manage-row"><label>Name</label><input id="mt-name-${i}" value="${t.name}"></div>
+        <div class="manage-row"><label>Location</label><input id="mt-loc-${i}" value="${t.location}"></div>
+        <div class="manage-row"><label>Price/hr ₹</label><input id="mt-price-${i}" type="number" value="${t.price}" min="0"></div>
+      </div>
+      <div class="manage-card-footer">
+        <button class="save-btn" onclick="saveTurf(${i})">💾 Save Changes</button>
+        <button class="toggle-btn ${t.available?'open':''}" onclick="toggleTurf(${i},this)">${t.available?'✅ Open':'🚫 Closed'}</button>
+      </div>
+    </div>`).join('');
+}
+
+function saveTurf(i){
+  turfs[i].name     = document.getElementById(`mt-name-${i}`).value.trim();
+  turfs[i].location = document.getElementById(`mt-loc-${i}`).value.trim();
+  turfs[i].price    = parseInt(document.getElementById(`mt-price-${i}`).value)||turfs[i].price;
+  renderHomeTurfs(); renderGames(); renderTurfSelect();
+  showToast('✅ Turf updated successfully!');
+}
+
+function toggleTurf(i,btn){
+  turfs[i].available = !turfs[i].available;
+  btn.textContent   = turfs[i].available?'✅ Open':'🚫 Closed';
+  btn.className     = 'toggle-btn'+(turfs[i].available?' open':'');
+  renderHomeTurfs(); renderTurfSelect();
+  showToast(turfs[i].available?'✅ Turf marked as Open':'🚫 Turf marked as Closed');
+}
+
+/* ════════════════════════════════
+   ADMIN — MANAGE SLOTS
+════════════════════════════════ */
+function renderManageSlots(){
+  document.getElementById('manageSlotContainer').innerHTML = `
+    <div class="slot-manage-card">
+      <h4>⏰ Time Slots <span style="color:var(--muted);font-size:13px;font-family:'Outfit',sans-serif;font-weight:400;">(applies to all turfs)</span></h4>
+      <div class="slot-manage-grid" id="slotManageGrid"></div>
+      <div class="add-slot-row">
+        <input type="text" id="newSlotTime" placeholder="e.g. 11:00–12:00 PM">
+        <button class="add-slot-btn" onclick="addSlot()">+ Add Slot</button>
+      </div>
+    </div>`;
+  refreshSlotManageGrid();
+}
+
+function refreshSlotManageGrid(){
+  document.getElementById('slotManageGrid').innerHTML = slots.map((s,i)=>`
+    <div class="slot-manage-item">
+      <span>${s.time}</span>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="slot-toggle" onclick="toggleSlotBooked(${i})" title="${s.booked?'Mark Available':'Mark Booked'}">${s.booked?'🔴':'🟢'}</button>
+        <button class="slot-toggle" onclick="removeSlot(${i})" title="Remove slot">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleSlotBooked(i){ slots[i].booked=!slots[i].booked; refreshSlotManageGrid(); renderSlots(); showToast('Slot status updated!'); }
+function removeSlot(i){ slots.splice(i,1); refreshSlotManageGrid(); renderSlots(); showToast('Slot removed!'); }
+function addSlot(){
+  const val = document.getElementById('newSlotTime').value.trim();
+  if(!val){ showToast('❌ Enter a valid time slot','error'); return; }
+  slots.push({time:val,booked:false});
+  document.getElementById('newSlotTime').value='';
+  refreshSlotManageGrid(); renderSlots();
+  showToast('✅ New slot added!');
+}
+
+/* ════════════════════════════════
+   ADMIN — BLOCKED DATES
+════════════════════════════════ */
+function renderBlockTurfSelect(){
+  document.getElementById('blockTurfSelect').innerHTML =
+    turfs.map(t=>`<option value="${t.id}">${t.icon} ${t.name}</option>`).join('');
+}
+
+function blockDate(){
+  const turfId = document.getElementById('blockTurfSelect').value;
+  const date   = document.getElementById('blockDateInput').value;
+  if(!date){ showToast('❌ Select a date to block','error'); return; }
+  if(!blockedDates[turfId]) blockedDates[turfId]=[];
+  if(blockedDates[turfId].includes(date)){ showToast('Date already blocked!','error'); return; }
+  blockedDates[turfId].push(date);
+  renderBlockedDatesList();
+  showToast('🚫 Date blocked successfully!');
+}
+
+function unblockDate(turfId,date){
+  blockedDates[turfId] = blockedDates[turfId].filter(d=>d!==date);
+  renderBlockedDatesList();
+  showToast('✅ Date unblocked!');
+}
+
+function renderBlockedDatesList(){
+  const container = document.getElementById('blockedDatesList');
+  let html = '';
+  for(const [tId,dates] of Object.entries(blockedDates)){
+    const turf = turfs.find(t=>t.id===tId);
+    dates.forEach(d=>{
+      html += `<div style="background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.3);border-radius:8px;padding:8px 14px;display:flex;align-items:center;gap:10px;font-size:13px;">
+        <span>${turf?.icon||'🏟️'} ${turf?.name.split('—')[0].trim()||tId}</span>
+        <span style="color:var(--accent);font-weight:700;">${new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span>
+        <button onclick="unblockDate('${tId}','${d}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;" title="Unblock">✕</button>
+      </div>`;
+    });
+  }
+  container.innerHTML = html || '<p style="color:var(--muted);font-size:13px;">No dates blocked yet.</p>';
+}
+
+/* ════════════════════════════════
+   ADMIN TABS
+════════════════════════════════ */
+function switchAdminTab(tab){
+  document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-content').forEach(c=>c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='turfs') renderManageTurfs();
+  if(tab==='slots') renderManageSlots();
+  if(tab==='dates'){ renderBlockTurfSelect(); renderBlockedDatesList(); }
+}
+
+/* ════════════════════════════════
+   PAGES & AUTH
+════════════════════════════════ */
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('nav ul li a').forEach(a=>a.classList.remove('active'));
+  const el = document.getElementById('nav-'+page);
+  if(el) el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  return false;
+}
+
+function guardDashboard(){
+  showPage('dashboard');
+  if(currentRole==='admin'){
+    document.getElementById('accessDenied').style.display='none';
+    document.getElementById('adminContent').style.display='block';
+  } else {
+    document.getElementById('accessDenied').style.display='block';
+    document.getElementById('adminContent').style.display='none';
+  }
+  return false;
+}
+
+const USERS  = [{phone:'9876543210',pass:'user123',name:'Raj Patel'},{phone:'user',pass:'user123',name:'Player'}];
+const ADMINS = [{username:'admin',pass:'admin@123',name:'Super Admin'}];
+
+function openLogin(tab){
+  document.getElementById('loginModal').classList.add('show');
+  switchLoginTab(tab||'user');
+  document.getElementById('uError').style.display='none';
+  document.getElementById('aError').style.display='none';
+}
+function closeLoginModal(){ document.getElementById('loginModal').classList.remove('show'); }
+
+function switchLoginTab(tab){
+  document.getElementById('form-user').style.display  = tab==='user' ?'block':'none';
+  document.getElementById('form-admin').style.display = tab==='admin'?'block':'none';
+  document.getElementById('tab-user').classList.toggle('active',tab==='user');
+  document.getElementById('tab-admin').classList.toggle('active',tab==='admin');
+}
+
+function doLogin(type){
+  if(type==='user'){
+    const phone = document.getElementById('uPhone').value.trim().replace('+91','').replace(/\s/g,'');
+    const pass  = document.getElementById('uPass').value.trim();
+    const found = USERS.find(u=>(u.phone===phone||u.phone===document.getElementById('uPhone').value.trim())&&u.pass===pass);
+    if(!found){ document.getElementById('uError').style.display='block'; return; }
+    currentRole='user'; currentUser=found.name;
+  } else {
+    const uname = document.getElementById('aUser').value.trim();
+    const pass  = document.getElementById('aPass').value.trim();
+    const found = ADMINS.find(a=>a.username===uname&&a.pass===pass);
+    if(!found){ document.getElementById('aError').style.display='block'; return; }
+    currentRole='admin'; currentUser=found.name;
+    closeLoginModal();
+    setTimeout(()=>guardDashboard(),300);
+    applyLoginState(); return;
+  }
+  closeLoginModal(); applyLoginState();
+}
+
+function applyLoginState(){
+  const badge=document.getElementById('roleBadge');
+  badge.style.display='inline-block';
+  document.getElementById('loginBtn').style.display='none';
+  document.getElementById('logoutBtn').style.display='inline-block';
+  badge.className='role-badge '+(currentRole==='admin'?'admin':'user');
+  badge.textContent = currentRole==='admin'?'🛡️ Admin':'👤 '+currentUser;
+  document.getElementById('loggedUser').textContent='Logged in as: '+currentUser;
+  if(currentRole==='admin') document.getElementById('adminName').textContent=currentUser;
+}
+
+function doLogout(){
+  currentRole=null; currentUser=null;
+  document.getElementById('roleBadge').style.display='none';
+  document.getElementById('loginBtn').style.display='inline-block';
+  document.getElementById('logoutBtn').style.display='none';
+  document.getElementById('loggedUser').textContent='Not logged in';
+  if(document.getElementById('page-dashboard').classList.contains('active')){
+    document.getElementById('accessDenied').style.display='block';
+    document.getElementById('adminContent').style.display='none';
+  }
+  showPage('home');
+}
+
+/* ════════════════════════════════
+   GAMES FILTER
+════════════════════════════════ */
+function filterGames(btn,tag){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.game-detail-card').forEach(card=>{
+    card.style.display=(tag==='all'||(card.getAttribute('data-tags')||'').includes(tag))?'block':'none';
+  });
+}
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+function showToast(msg, type='success'){
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  t.className='toast'+(type==='error'?' error':'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+/* ════════════════════════════════
+   INIT
+════════════════════════════════ */
+document.getElementById('bookDate').min = new Date().toISOString().split('T')[0];
+document.getElementById('bookDate').addEventListener('change', ()=>{selectedSlot='';renderSlots();updateSummary();});
+renderHomeTurfs();
+renderGames();
+renderTurfSelect();
+</script>
+</body>
+</html>
